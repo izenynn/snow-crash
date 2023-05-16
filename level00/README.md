@@ -33,6 +33,13 @@ just sifted:
 
 [Cipher Disk](https://www.dcode.fr/cipher-disk)
 
-So and the IoC suggested, is just a monoalphabetic substitution, the caesar
+So as the IoC suggested, is just a monoalphabetic substitution, the caesar
 cipher would also had work for decripting this, that was the next step following
 the monoalphabetic way.
+
+The decipher text is:
+```raw
+nottoohardhere
+```
+
+I try to use the result as the password of `flag00` and it works!
