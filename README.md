@@ -36,7 +36,7 @@ the usual pentesting tools, here's what I got, before even starting:
 - `01`: the `/etc/passwd` hash seems pretty cool
 - `02`: `NULL`
 - `03`: `NULL`
-- `04`: does not have an apache site, but has a `/var/www/level04` directory
+- `04`: does not have an apache site, but has a `/var/www/level04` directory, and the `level05` site points to that dir so...
 - `05`: has an apache site, and a mailbox, and some weird stuff in cron: `/opt/openarenaserver` and `/usr/sbin/openarenaserver`
 - `06`: `NULL`
 - `07`: `NULL`
@@ -47,6 +47,65 @@ the usual pentesting tools, here's what I got, before even starting:
 - `12`: has an apache site and a `/var/www/level12` directory
 - `13`: `NULL`
 - `14`: `NULL`
+
+About the apache sites, `level04` does not have a site, but the `level05` site
+points to the `/var/www/level04` directory.
+
+So here is the relevant Apache config:
+```xml
+/etc/apache2/mods-available/php5.conf-    <FilesMatch "\.ph(p3?|tml)$">
+/etc/apache2/mods-available/php5.conf:  SetHandler application/x-httpd-php
+--
+/etc/apache2/mods-available/php5.conf-    <FilesMatch "\.phps$">
+/etc/apache2/mods-available/php5.conf:  SetHandler application/x-httpd-php-source
+--
+/etc/apache2/mods-enabled/php5.conf-    <FilesMatch "\.ph(p3?|tml)$">
+...skipping...
+        <Directory "/usr/lib/cgi-bin">
+                AllowOverride None
+                Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+                Order allow,deny
+                Allow from all
+        </Directory>
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        LogLevel warn
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+    Alias /doc/ "/usr/share/doc/"
+    <Directory "/usr/share/doc/">
+        Options Indexes MultiViews FollowSymLinks
+        AllowOverride None
+        Order deny,allow
+        Deny from all
+        Allow from 127.0.0.0/255.0.0.0 ::1/128
+    </Directory>
+</VirtualHost>
+lrwxrwxrwx 1 root root 31 Aug 30  2015 /etc/apache2/sites-enabled/level05.conf -> ../sites-available/level05.conf
+<VirtualHost *:4747>
+        DocumentRoot    /var/www/level04/
+        SuexecUserGroup flag04 level04
+        <Directory /var/www/level04>
+                Options +ExecCGI
+                DirectoryIndex level04.pl
+                AllowOverride None
+                Order allow,deny
+                Allow from all
+                AddHandler cgi-script .pl
+        </Directory>
+</VirtualHost>
+lrwxrwxrwx 1 root root 31 Aug 30  2015 /etc/apache2/sites-enabled/level12.conf -> ../sites-available/level12.conf
+<VirtualHost *:4646>
+        DocumentRoot    /var/www/level12/
+        SuexecUserGroup flag12 level12
+        <Directory /var/www/level12>
+                Options +ExecCGI
+                DirectoryIndex level12.pl
+                AllowOverride None
+                Order allow,deny
+                Allow from all
+                AddHandler cgi-script .pl
+        </Directory>
+</VirtualHost>
+```
 
 Enumeration go brrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
 
