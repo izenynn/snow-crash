@@ -37,7 +37,7 @@ the usual pentesting tools, here's what I got, before even starting:
 - `02`: `NULL`
 - `03`: `NULL`
 - `04`: does not have an apache site, but has a `/var/www/level04` directory, and the `level05` site points to that dir so...
-- `05`: has an apache site, and a mailbox, and some weird stuff in cron: `/opt/openarenaserver` and `/usr/sbin/openarenaserver`
+- `05`: has an apache site, and a mailbox, and some weird files with ACLs that shares perms between `level05` and `flag05`: `/opt/openarenaserver` and `/usr/sbin/openarenaserver`
 - `06`: `NULL`
 - `07`: `NULL`
 - `08`: `NULL`
