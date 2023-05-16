@@ -7,7 +7,7 @@
 # brew install hudochenkov/sshpass/sshpass
 
 if [[ -z "$1" ]]; then
-    echo "Error: not enought arguments" >&2
+    echo "Connects to the machine automatically with the user of the specified level" >&2
     echo "Usage: $0 LEVEL" >&2
     exit 1
 fi

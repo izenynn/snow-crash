@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [[ -z "$1" || -z "$2" ]]; then
-    echo "Error: not enought arguments" >&2
+    echo "Sends a file to the machine '/dev/shm' directory" >&2
     echo "Usage: $0 LEVEL LOCAL_FILE" >&2
     exit 1
 fi

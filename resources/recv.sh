@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 
 if [[ -z "$1" || -z "$2" ]]; then
-    echo "Error: not enought arguments" >&2
+    echo "Receives a file from the machile in the './files' directory" >&2
     echo "Usage: $0 LEVEL REMOTE_FILE" >&2
     exit 1
+fi
+
+directory="./files"
+if [ ! -d "$directory" ]; then
+    mkdir "$directory"
 fi
 
 user="level$(printf %02d $1)"
@@ -21,6 +26,6 @@ else
     export SSHPASS=$(cat "$flag_file")
 fi
 
-sshpass -e scp -P 4242 "$user"'@localhost:'"$2" "./"
+sshpass -e scp -P 4242 "$user"'@localhost:'"$2" "$directory"
 
 exit 0
