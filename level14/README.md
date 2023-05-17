@@ -48,3 +48,65 @@ But being honest, attaching gdb and just jumping changing eax to the desired
 values, is even more easier than copy pasting the decrypt function, and you use
 the debugger for level13 and level14, both, although level14 changes a bit
 because you will need to play with the eax, but nothing difficult.
+
+# alternative path
+
+Using `gdb` we can also bypass this binary all the way to the `ft_des()` call,
+it's a little trickier than `level13`, but it's still easy.
+
+The main difference is that we need to bypass `ptrace(PTRACE_TRACEME, ...)`,
+a little old anti-debugger trick.
+
+But it's easy, in fact, there are multiple methods:
+- `nop` the call with something like:
+    - `set write`
+    - `set {unsigned int}$pc = 0x90909090`
+    - `set {unsigned char}($pc+4) = 0x90`
+    - `set write off`
+- alternative for patching:
+    - `set {unsigned int}0x40911f = 0x90909090`
+    - `set {unsigned char}0x409123 = 0x90`
+- manipulate `$pc`:
+    - `set $pc+=5` or more explicit `set $pc=$pc+5`
+    - `jump *$pc+5`
+- change return value of ptrace: `set $eax=0`
+
+In the `level13` I explained a lot about gdb, so now I'm gonna skip the basics:
+```bash
+$ gdb `wich getflag`
+
+# layout asm, layout regs, disassembly-flavor, etc.
+$ b main
+$ r
+
+# This is the ptrace call, 4 arguments, we'll jump all of them
+# lVar2 = ptrace(PTRACE_TRACEME,0,1,0);
+
+# The assembly code sets eax to 0, prepares the parameters, and does a `test`
+# to check if eax is 0, if so, it jumps to main+98
+
+# Move before the code that calls ptrace
+$ b *main+67
+$ c
+
+# Skip ptrace call and set eax to 0, so program thinks is not being tracked
+# Check the difference in bytes of the `call` instruction and the next one
+$ x/5i $pc
+
+# That's the `call` opcode size, let's skip those 5 bytes hehe
+$ set $pc=$pc+5
+
+# Set the next breakpoint after getuid()
+$ b *main+444
+$ c
+
+# Check registers, our UID is in the eax registers, as expected if you know asm
+$ p $eax
+# Change it, hehe
+$ set $eax=3014
+
+# And finish execution
+c
+```
+
+And there's the flag, easy alternative method right?
