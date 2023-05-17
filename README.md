@@ -109,7 +109,7 @@ lrwxrwxrwx 1 root root 31 Aug 30  2015 /etc/apache2/sites-enabled/level12.conf -
 
 Enumeration go brrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
 
-*NOTE: more detailed info on each level README.md, this is just the initial system enum`
+*NOTE: more detailed info on each level README.md, this is just the initial system enum*
 
 ## Dirty COW
 
