@@ -43,3 +43,8 @@ Anyway, just compile and run the binary.
 
 I could have just done that for everyuser right? I highly doubt that's the
 intended way...
+
+But being honest, attaching gdb and just jumping changing eax to the desired
+values, is even more easier than copy pasting the decrypt function, and you use
+the debugger for level13 and level14, both, although level14 changes a bit
+because you will need to play with the eax, but nothing difficult.
